@@ -19,68 +19,35 @@
 	});
 </script>
 
-<div class="my-auto grid items-center justify-center gap-8 text-center">
-	<div
-		class="flex -translate-y-16 select-none items-center rounded-xl text-3xl font-semibold md:-translate-y-12 md:text-5xl"
-	>
-		<Logo classNames="size-12 md:size-20 dark:invert mr-0.5" />
-		{publicConfig.PUBLIC_APP_NAME}
-	</div>
-	<!-- <div class="lg:col-span-1">
-		<div>
-			<div class="mb-3 flex items-center text-2xl font-semibold">
-				<Logo classNames="mr-1 flex-none dark:invert" />
-				{publicConfig.PUBLIC_APP_NAME}
-				<div
-					class="ml-3 flex h-6 items-center rounded-lg border border-gray-100 bg-gray-50 px-2 text-base text-gray-400 dark:border-gray-700/60 dark:bg-gray-800"
-				>
-					{publicConfig.PUBLIC_VERSION}
-				</div>
-			</div>
-			<p class="text-base text-gray-600 dark:text-gray-400">
-				{publicConfig.PUBLIC_APP_DESCRIPTION ||
-					"Making the community's best AI chat models available to everyone."}
-			</p>
-		</div>
-	</div>
-	<div class="lg:col-span-2 lg:pl-24">
-		{#each JSON5.parse(publicConfig.PUBLIC_ANNOUNCEMENT_BANNERS || "[]") as banner}
-			<AnnouncementBanner classNames="mb-4" title={banner.title}>
-				<a
-					target={banner.external ? "_blank" : "_self"}
-					href={banner.linkHref}
-					class="mr-2 flex items-center underline hover:no-underline">{banner.linkTitle}</a
-				>
-			</AnnouncementBanner>
-		{/each}
-		<div class="overflow-hidden rounded-xl border dark:border-gray-800">
-			<div class="flex p-3">
-				<div>
-					<div class="text-sm text-gray-600 dark:text-gray-400">Current Model</div>
-					<div class="flex items-center gap-1.5 font-semibold max-sm:text-smd">
-						{#if currentModel.logoUrl}
-							<img
-								class="aspect-square size-4 rounded border bg-white dark:border-gray-700"
-								src={currentModel.logoUrl}
-								alt=""
-							/>
-						{:else}
-							<div
-								class="size-4 rounded border border-transparent bg-gray-300 dark:bg-gray-800"
-							></div>
-						{/if}
-						{currentModel.displayName}
-					</div>
-				</div>
-				<a
-					href="{base}/settings/{currentModel.id}"
-					aria-label="Settings"
-					class="btn ml-auto flex h-7 w-7 self-start rounded-full bg-gray-100 p-1 text-xs hover:bg-gray-100 dark:border-gray-600 dark:bg-gray-800 dark:hover:bg-gray-600"
-					><IconGear /></a
-				>
-			</div>
-			<ModelCardMetadata variant="dark" model={currentModel} />
-		</div>
-	</div>
-	<div class="h-40 sm:h-24"></div> -->
+<div class="mt-15 grid items-start justify-left gap-6 px-4 md:mt-32">
+    <div class="flex flex-col select-none items-start text-4xl font-bold md:text-6xl">
+   
+<h1 class="font-thin tracking-tight text-gray-900 dark:text-white ">
+        Pretty Smells <br>
+        Chat
+    </h1>
+    </div>
+
+    <div class="max-w-2xl space-y-6 text-left my-7">
+        <div>
+            <h4 class="font-bold text-lg mb-5">Get Recommendations</h4>
+            <p class="text-gray-600 dark:text-gray-300">
+                Our AI identifies unique patterns across your favorite fragrances to build a personalized scent profile.
+            </p>
+
+            <p class="text-gray-600 dark:text-gray-300 mt-4">
+                Tell us which products you love, or describe the specific notes you're looking for. 
+            </p>
+
+            <p class="text-gray-600 dark:text-gray-300 italic opacity-80 mt-4">
+                Coming soon: Upload a photo of your collection, and we'll instantly analyze your library to find your next signature scent.
+            </p>
+        </div>
+
+        <div class="mt-10">
+            <p class="text-gray-600 dark:text-gray-300 mt-6">
+                <a href="https://www.prettysmellslab.com" class="underline">Return to Store >></a>
+            </p>
+        </div>
+    </div>
 </div>
