@@ -10,7 +10,6 @@
 <script lang="ts">
 	import { base } from "$app/paths";
 
-	import Logo from "$lib/components/icons/Logo.svelte";
 	import IconSun from "$lib/components/icons/IconSun.svelte";
 	import IconMoon from "$lib/components/icons/IconMoon.svelte";
 	import { switchTheme, subscribeToTheme } from "$lib/switchTheme";
@@ -136,7 +135,6 @@
 		class="flex select-none items-center rounded-xl text-lg font-semibold"
 		href="{publicConfig.PUBLIC_ORIGIN}{base}/"
 	>
-		<Logo classNames="dark:invert mr-[2px]" />
 		{publicConfig.PUBLIC_APP_NAME}
 	</a>
 	<a

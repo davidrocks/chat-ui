@@ -19,34 +19,37 @@
 		<div
 			class="relative -mx-6 grid h-48 select-none place-items-center bg-gradient-to-t from-black/5 dark:from-white/10"
 		>
+            <!--
 			<img
 				class="size-full bg-black object-cover"
 				src="{publicConfig.assetPath}/omni-welcome.gif"
 				alt="Omni AI model router animation"
 			/>
-			<!-- <h2
+			 <h2
 				class="flex translate-y-1 items-center text-3xl font-semibold text-gray-900 dark:text-gray-100"
 			>
 				<Logo classNames="mr-2 size-12 dark:invert" />
 				{publicConfig.PUBLIC_APP_NAME}
-			</h2> -->
+			</h2> 
 			<div
 				class="absolute bottom-3 right-3 rounded-lg border border-blue-500/20 bg-blue-500/20 px-2 py-0.5 text-sm font-semibold text-blue-500"
 			>
 				Now with MCP!
 			</div>
+            -->
 		</div>
 
 		<div class="text-gray-700 dark:text-gray-200">
 			<p class="text-[15px] leading-relaxed">
-				Welcome to {publicConfig.PUBLIC_APP_NAME}, the chat app powered by open source AI models.
+				Welcome to {publicConfig.PUBLIC_APP_NAME}, your AI-powered perfume recommendation assistant.
 			</p>
 			<p class="mt-3 text-[15px] leading-relaxed">
-				<IconOmni classNames="-translate-y-px" /> Omni automatically picks the best AI model to give
-				you optimal answers depending on your requests.
+				<IconOmni classNames="-translate-y-px" /> Our system intelligently analyzes your scent preferences, identifies mentioned fragrances,
+                and uses a sophisticated AI process to suggest personalized perfume matches based on notes, accords, and gender-specific profiles.
 			</p>
 			<p class="mt-3 text-[15px] leading-relaxed">
-				You can also choose from any available open source models to chat with directly.
+                Enter fragrances from your collection to find similar products, or maybe just ask for "a light citrus perfume for an evening event". Suggests both male and female fragrances and all 
+                are available to purchase from our store.
 			</p>
 		</div>
 
