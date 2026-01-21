@@ -16,10 +16,12 @@
 	<div
 		class="flex w-full flex-col gap-8 bg-white bg-gradient-to-b to-transparent px-6 pb-7 dark:bg-black dark:from-white/10 dark:to-white/5"
 	>
+     <!--
+
 		<div
 			class="relative -mx-6 grid h-48 select-none place-items-center bg-gradient-to-t from-black/5 dark:from-white/10"
 		>
-            <!--
+           
 			<img
 				class="size-full bg-black object-cover"
 				src="{publicConfig.assetPath}/omni-welcome.gif"
@@ -36,18 +38,15 @@
 			>
 				Now with MCP!
 			</div>
-            -->
+            
 		</div>
+-->
 
 		<div class="text-gray-700 dark:text-gray-200">
-			<p class="text-[15px] leading-relaxed">
+			<p class="text-[13px] leading-relaxed">
 				Welcome to {publicConfig.PUBLIC_APP_NAME}, your AI-powered perfume recommendation assistant.
 			</p>
-			<p class="mt-3 text-[15px] leading-relaxed">
-				<IconOmni classNames="-translate-y-px" /> Our system intelligently analyzes your scent preferences, identifies mentioned fragrances,
-                and uses a sophisticated AI process to suggest personalized perfume matches based on notes, accords, and gender-specific profiles.
-			</p>
-			<p class="mt-3 text-[15px] leading-relaxed">
+			<p class="mt-3 text-[13px] leading-relaxed">
                 Enter fragrances from your collection to find similar products, or maybe just ask for "a light citrus perfume for an evening event". Suggests both male and female fragrances and all 
                 are available to purchase from our store.
 			</p>
