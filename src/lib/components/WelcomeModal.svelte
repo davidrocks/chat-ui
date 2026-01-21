@@ -47,7 +47,7 @@
 				Welcome to {publicConfig.PUBLIC_APP_NAME}, your AI-powered perfume recommendation assistant.
 			</p>
 			<p class="mt-3 text-[13px] leading-relaxed">
-                Enter fragrances from your collection to find similar products, or maybe just ask for "a light citrus perfume for an evening event". Suggests both male and female fragrances and all 
+                Tell me some fragrances from your collection to find similar products, or maybe just ask for "a light citrus perfume for an evening event". Suggests both male and female fragrances and all 
                 are available to purchase from our store.
 			</p>
 		</div>
