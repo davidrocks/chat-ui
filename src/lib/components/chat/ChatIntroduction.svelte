@@ -30,7 +30,7 @@
     <div class="max-w-2xl space-y-6 text-left my-2">
         <div>
             <p class="text-gray-600 dark:text-gray-300">
-                "My wife wears Tom Ford in the evening and Chanel during the day, what can I get her for her birthday?", "what is the best Cologne for the office?, "I'm 25 and like floral and citrus perfumes, what should I try next?",  "I want a scent like summer evenings in Bali", ".
+                "I want a scent like summer in Bali".
             </p>            
 
             <p class="text-lg text-gray-600 dark:text-gray-400 max-w-3xl">
