@@ -42,7 +42,7 @@
 		</div>
 -->
 
-		<div class="text-gray-700 dark:text-gray-200">
+		<div class="text-gray-700 dark:text-gray-200 py-3">
 			<p class="text-[13px] leading-relaxed">
 				Welcome to {publicConfig.PUBLIC_APP_NAME}, your AI-powered perfume recommendation assistant.
 			</p>

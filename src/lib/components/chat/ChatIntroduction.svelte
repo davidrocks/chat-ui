@@ -30,15 +30,11 @@
     <div class="max-w-2xl space-y-6 text-left my-2">
         <div>
             <p class="text-gray-600 dark:text-gray-300">
-                Our AI identifies unique patterns across your favorite fragrances to build a personalized scent profile.
-            </p>
+                "My wife wears Tom Ford in the evening and Chanel during the day, what can I get her for her birthday?", "what is the best Cologne for the office?, "I'm 25 and like floral and citrus perfumes, what should I try next?",  "I want a scent like summer evenings in Bali", ".
+            </p>            
 
-            <p class="text-gray-600 dark:text-gray-300 mt-4">
-                Tell us which products you love, or describe the specific notes you're looking for. 
-            </p>
-
-            <p class="text-gray-600 dark:text-gray-300 italic opacity-80 mt-4">
-                Coming soon: Upload a photo of your collection, and we'll instantly analyze your library to find your next signature scent.
+            <p class="text-lg text-gray-600 dark:text-gray-400 max-w-3xl">
+                All recommended fragrances are in stock and available for immediate delivery from our store.
             </p>
         </div>
     </div>
