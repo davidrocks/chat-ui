@@ -30,7 +30,7 @@
     <div class="max-w-2xl space-y-6 text-left my-2">
         <div>
             <p class="text-lg text-gray-600 dark:text-gray-400 py-3">
-               Upload an image of your scents, or tell us what you like and are looking for, and we will do the rest.
+               Upload an image of your scents, or tell us what you like, and we will do the rest.
             </p>            
 
             <p class="text-lg text-gray-600 dark:text-gray-400 py-3">
