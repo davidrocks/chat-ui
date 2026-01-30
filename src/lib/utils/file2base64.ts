@@ -1,13 +1,18 @@
-const file2base64 = async (file: File): Promise<string> => {
-  try {
-    const arrayBuffer = await file.arrayBuffer(); // Read as ArrayBuffer via Blob API
-    const uint8Array = new Uint8Array(arrayBuffer);
-    const base64 = btoa(String.fromCharCode(...uint8Array)); // Convert to base64
-    return base64;
-  } catch (error) {
-    console.error(`Blob read error: ${error.name} - ${error.message}`);
-    throw new Error('File access failed—please re-select the file'); // For UI handling
-  }
+const file2base64 = (file: File): Promise<string> => {
+  return new Promise<string>((resolve, reject) => {
+    const reader = new FileReader();
+    reader.readAsDataURL(file);
+    reader.onload = () => {
+      const dataUrl = reader.result as string;
+      const base64 = dataUrl.split(",")[1];
+      resolve(base64);
+    };
+    reader.onerror = () => {
+      const err = reader.error; // DOMException
+      console.error(`FileReader error: ${err?.name} (code: ${err?.code}) - ${err?.message}`);
+      reject(err || new Error('Unknown FileReader error'));
+    };
+  });
 };
 
 export default file2base64;
