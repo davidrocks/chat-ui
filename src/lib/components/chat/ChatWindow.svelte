@@ -3,7 +3,10 @@
 	import { onDestroy } from "svelte";
 
 	import IconOmni from "$lib/components/icons/IconOmni.svelte";
+	import IconCheap from "$lib/components/icons/IconCheap.svelte";
+	import IconFast from "$lib/components/icons/IconFast.svelte";
 	import CarbonCaretDown from "~icons/carbon/caret-down";
+	import { PROVIDERS_HUB_ORGS } from "@huggingface/inference";
 	import CarbonDirectionRight from "~icons/carbon/direction-right-01";
 	import IconArrowUp from "~icons/lucide/arrow-up";
 	import IconMic from "~icons/lucide/mic";
@@ -33,6 +36,7 @@
 	import type { RouterFollowUp, RouterExample } from "$lib/constants/routerExamples";
 	import { allBaseServersEnabled, mcpServersLoaded } from "$lib/stores/mcpServers";
 	import { shareModal } from "$lib/stores/shareModal";
+	import { pendingChatInput } from "$lib/stores/pendingChatInput";
 	import LucideHammer from "~icons/lucide/hammer";
 
 	import { fly } from "svelte/transition";
@@ -40,6 +44,7 @@
 
 	import { isVirtualKeyboard } from "$lib/utils/isVirtualKeyboard";
 	import { requireAuthUser } from "$lib/utils/auth";
+	import { tap, error as hapticError } from "$lib/utils/haptics";
 	import { page } from "$app/state";
 	import {
 		isMessageToolCallUpdate,
@@ -98,6 +103,7 @@
 
 	const handleSubmit = () => {
 		if (requireAuthUser() || loading || !draft) return;
+		tap();
 		onmessage?.(draft);
 		draft = "";
 	};
@@ -297,6 +303,12 @@
 			(currentModel as unknown as { supportsTools?: boolean }).supportsTools) === true
 	);
 
+	// Get provider override for the current model (HuggingChat only)
+	let providerOverride = $derived($settings.providerOverrides?.[currentModel.id]);
+	let hasProviderOverride = $derived(
+		providerOverride && providerOverride !== "auto" && !currentModel.isRouter
+	);
+
 	// Always allow common text-like files; add images only when model is multimodal
 	import { TEXT_MIME_ALLOWLIST, IMAGE_MIME_ALLOWLIST_DEFAULT } from "$lib/constants/mime";
 
@@ -329,13 +341,16 @@
 			activeRouterExamplePrompt &&
 			routerFollowUps.length > 0 &&
 			routerUserMessages.length === 1 &&
-			currentModel.isRouter &&
+			(currentModel.isRouter || (modelSupportsTools && $allBaseServersEnabled)) &&
 			!hideRouterExamples &&
 			!loading
 	);
 
 	$effect(() => {
-		if (!currentModel.isRouter || !messages.length) {
+		if (
+			!(currentModel.isRouter || (modelSupportsTools && $allBaseServersEnabled)) ||
+			!messages.length
+		) {
 			activeRouterExamplePrompt = null;
 			return;
 		}
@@ -348,6 +363,13 @@
 
 		const match = activeExamples.find((ex) => ex.prompt.trim() === firstUserMessage.content.trim());
 		activeRouterExamplePrompt = match ? match.prompt : null;
+	});
+
+	$effect(() => {
+		if ($pendingChatInput) {
+			draft = $pendingChatInput;
+			pendingChatInput.set(undefined);
+		}
 	});
 
 	function triggerPrompt(prompt: string) {
@@ -533,7 +555,7 @@
 			dark:from-gray-900 dark:via-gray-900/100
 			dark:to-gray-900/0 max-sm:py-0 sm:px-5 md:pb-4 xl:max-w-4xl [&>*]:pointer-events-auto"
 	>
-		{#if !draft.length && !messages.length && !sources.length && !loading && currentModel.isRouter && activeExamples.length && !hideRouterExamples && !lastIsError && $mcpServersLoaded}
+		{#if !draft.length && !messages.length && !sources.length && !loading && (currentModel.isRouter || (modelSupportsTools && $allBaseServersEnabled)) && activeExamples.length && !hideRouterExamples && !lastIsError && $mcpServersLoaded}
 			<div
 				class="no-scrollbar mb-3 flex w-full select-none justify-start gap-2 overflow-x-auto whitespace-nowrap text-gray-400 dark:text-gray-500"
 			>
@@ -645,7 +667,10 @@
 
 						{#if loading}
 							<StopGeneratingBtn
-								onClick={() => onstop?.()}
+								onClick={() => {
+									hapticError();
+									onstop?.();
+								}}
 								showBorder={true}
 								classNames="absolute bottom-2 right-2 size-8 sm:size-7 self-end rounded-full border bg-white text-black shadow transition-none dark:border-transparent dark:bg-gray-600 dark:text-white"
 							/>
@@ -710,6 +735,31 @@
 								{currentModel.displayName}
 							{:else}
 								Model: {currentModel.displayName}
+								{#if hasProviderOverride}
+									{@const hubOrg =
+										PROVIDERS_HUB_ORGS[providerOverride as keyof typeof PROVIDERS_HUB_ORGS]}
+									<span
+										class="inline-flex shrink-0 items-center rounded p-0.5 {providerOverride ===
+										'fastest'
+											? 'bg-green-100 text-green-600 dark:bg-green-800/20 dark:text-green-500'
+											: providerOverride === 'cheapest'
+												? 'bg-blue-100 text-blue-600 dark:bg-blue-800/20 dark:text-blue-500'
+												: ''}"
+										title="Provider: {providerOverride}"
+									>
+										{#if providerOverride === "fastest"}
+											<IconFast classNames="text-sm" />
+										{:else if providerOverride === "cheapest"}
+											<IconCheap classNames="text-sm" />
+										{:else if hubOrg}
+											<img
+												src="https://huggingface.co/api/avatars/{hubOrg}"
+												alt={providerOverride}
+												class="size-3 flex-none rounded-sm"
+											/>
+										{/if}
+									</span>
+								{/if}
 							{/if}
 							<CarbonCaretDown class="-ml-0.5 text-xxs" />
 						</a>
@@ -743,7 +793,7 @@
 					</span>
 				{/if}
 				{#if !messages.length && !loading}
-					<span>Generated content may be inaccurate or false.</span>
+					<span class="max-sm:hidden">Generated content may be inaccurate or false.</span>
 				{/if}
 			</div>
 		</div>

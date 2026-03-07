@@ -235,7 +235,7 @@
 												{#each parsedOutput.images as image, imageIndex}
 													<img
 														alt={`Tool result image ${imageIndex + 1}`}
-														class="max-h-60 rounded border border-gray-200 dark:border-gray-700"
+														class="max-h-60 cursor-pointer rounded border border-gray-200 dark:border-gray-700"
 														src={`data:${image.mimeType};base64,${image.data}`}
 													/>
 												{/each}
@@ -243,8 +243,7 @@
 										{/if}
 
 										{#if parsedOutput.metadata.length > 0}
-											<pre
-												class="scrollbar-custom max-h-60 overflow-y-auto whitespace-pre-wrap break-all font-mono text-xs">{formatValue(
+											<pre class="whitespace-pre-wrap break-all font-mono text-xs">{formatValue(
 													Object.fromEntries(parsedOutput.metadata)
 												)}</pre>
 										{/if}

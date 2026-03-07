@@ -1,5 +1,6 @@
 import { authCondition } from "$lib/server/auth";
 import { collections } from "$lib/server/database";
+import { config } from "$lib/server/config";
 import { models, validModelIdSchema } from "$lib/server/models";
 import { ERROR_MESSAGES } from "$lib/stores/errors";
 import type { Message } from "$lib/types/Message";
@@ -366,11 +367,19 @@ export async function POST({ request, locals, params, getClientAddress }) {
 
 			let finalAnswerReceived = false;
 			let abortedByUser = false;
+			let finishedStatusSent = false;
 
 			messageToWriteTo.updates ??= [];
 			async function update(event: MessageUpdate) {
 				if (!messageToWriteTo || !conv) {
 					throw Error("No message or conversation to write events to");
+				}
+
+				if (
+					event.type === MessageUpdateType.Status &&
+					event.status === MessageUpdateStatus.Finished
+				) {
+					finishedStatusSent = true;
 				}
 
 				// Add token to content or skip if empty
@@ -556,6 +565,11 @@ export async function POST({ request, locals, params, getClientAddress }) {
 					forceMultimodal: Boolean(userSettings?.multimodalOverrides?.[model.id]),
 					// Force-enable tools if user settings say so for this model
 					forceTools: Boolean(userSettings?.toolsOverrides?.[model.id]),
+					// Inference provider preference (HuggingChat only, skip for router models)
+					provider:
+						config.isHuggingChat && !model.isRouter
+							? userSettings?.providerOverrides?.[model.id]
+							: undefined,
 					locals,
 					abortController: ctrl,
 				};
@@ -607,6 +621,7 @@ export async function POST({ request, locals, params, getClientAddress }) {
 			} finally {
 				// check if no output was generated
 				if (!hasError && !abortedByUser && messageToWriteTo.content === initialMessageContent) {
+					hasError = true;
 					logger.warn(
 						{
 							conversationId: conversationKey,
@@ -624,6 +639,13 @@ export async function POST({ request, locals, params, getClientAddress }) {
 						message: "No output was generated. Something went wrong.",
 					});
 				}
+			}
+
+			if (!hasError && !finishedStatusSent) {
+				await update({
+					type: MessageUpdateType.Status,
+					status: MessageUpdateStatus.Finished,
+				});
 			}
 
 			await persistConversation();

@@ -1,6 +1,7 @@
 import { browser } from "$app/environment";
 import { invalidate } from "$app/navigation";
 import { base } from "$app/paths";
+import type { StreamingMode } from "$lib/types/Settings";
 import { UrlDependency } from "$lib/types/UrlDependency";
 import { getContext, setContext } from "svelte";
 import { type Writable, writable, get } from "svelte/store";
@@ -13,10 +14,12 @@ type SettingsStore = {
 	customPrompts: Record<string, string>;
 	multimodalOverrides: Record<string, boolean>;
 	toolsOverrides: Record<string, boolean>;
-	recentlySaved: boolean;
-	disableStream: boolean;
-	directPaste: boolean;
 	hidePromptExamples: Record<string, boolean>;
+	providerOverrides: Record<string, string>;
+	recentlySaved: boolean;
+	streamingMode: StreamingMode;
+	directPaste: boolean;
+	hapticsEnabled: boolean;
 	billingOrganization?: string;
 };
 
