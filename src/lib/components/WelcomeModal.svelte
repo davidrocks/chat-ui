@@ -49,6 +49,9 @@
 			<p class="mt-3 text-[13px] leading-relaxed">
                 Tell me some fragrances from your collection to find similar products, or maybe just ask for "a light citrus perfume for an evening event". Suggests both male and female fragrances and all 
                 are available to purchase from our store.
+
+		
+
 			</p>
 		</div>
 

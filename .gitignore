@@ -17,3 +17,6 @@ models/*
 !models/add-your-models-here.txt
 .claude/*
 !.claude/skills/
+vite
+.vite/
+chat-ui@0.20.0

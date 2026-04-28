@@ -442,7 +442,7 @@
 	function triggerPrompt(prompt: string) {
 		if (requireAuthUser() || loading) return;
 		draft = prompt;
-		handleSubmit();
+		// handleSubmit();
 	}
 
 	async function startExample(example: RouterExample) {
@@ -628,18 +628,20 @@
 			dark:from-gray-900 dark:via-gray-900/100
 			dark:to-gray-900/0 max-sm:py-0 sm:px-5 md:pb-4 xl:max-w-4xl [&>*]:pointer-events-auto"
 	>
-		{#if !draft.length && !messages.length && !sources.length && !loading && (currentModel.isRouter || (modelSupportsTools && $allBaseServersEnabled)) && activeExamples.length && !hideRouterExamples && !lastIsError && $mcpServersLoaded}
-			<div
-				class="no-scrollbar mb-3 flex w-full select-none justify-start gap-2 overflow-x-auto whitespace-nowrap text-gray-400 dark:text-gray-500"
-			>
-				{#each activeExamples as ex}
-					<button
-						class="flex items-center rounded-lg bg-gray-100/90 px-2 py-0.5 text-center text-sm backdrop-blur hover:text-gray-500 dark:bg-gray-700/50 dark:hover:text-gray-400"
-						onclick={() => startExample(ex)}>{ex.title}</button
-					>
-				{/each}
-			</div>
+		{#if !messages.length && !sources.length && !loading   }
+            <div class="mb-3 flex w-full flex-wrap justify-left gap-2">
+                {#each activeExamples as ex}
+                    <button
+                        class="flex items-center rounded-lg bg-gray-100/90 px-2 py-0.5 text-center text-sm backdrop-blur hover:text-gray-500 dark:bg-gray-700/50 dark:hover:text-gray-400"
+                        onclick={() => startExample(ex)}
+                    >
+                        {ex.title}
+                    </button>
+                {/each}
+            </div>
 		{/if}
+
+        
 		{#if shouldShowRouterFollowUps && !lastIsError}
 			<div
 				class="no-scrollbar mb-3 flex w-full select-none justify-start gap-2 overflow-x-auto whitespace-nowrap text-gray-400 dark:text-gray-500"
@@ -697,7 +699,7 @@
 					handleSubmit();
 				}}
 				class={{
-					"relative flex w-full max-w-4xl flex-1 items-center rounded-xl border bg-gray-100 dark:border-gray-700 dark:bg-gray-800": true,
+					"relative flex w-full max-w-4xl flex-1 items-center rounded-xl border bg-gray-100 dark:border-gray-700 dark:bg-gray-800 mb-4": true,
 					"opacity-30": isReadOnly,
 					"max-sm:mb-4": focused && isVirtualKeyboard(),
 				}}
@@ -777,98 +779,7 @@
 					</div>
 				{/if}
 			</form>
-			<div
-				class={{
-					"mt-1.5 flex h-5 items-center self-stretch whitespace-nowrap px-0.5 text-xs text-gray-400/90 max-md:mb-2 max-sm:gap-2": true,
-					"max-sm:hidden": focused && isVirtualKeyboard(),
-				}}
-			>
-				{#if models.find((m) => m.id === currentModel.id)}
-					{#if loading && streamingToolCallName}
-						<span class="inline-flex items-center gap-1 whitespace-nowrap text-xs">
-							<LucideHammer class="size-3" />
-							Calling tool
-							<span class="loading-dots font-medium">
-								{availableTools.find((t) => t.name === streamingToolCallName)?.displayName ??
-									streamingToolCallName}
-							</span>
-						</span>
-					{:else if !currentModel.isRouter || !loading}
-						<a
-							href="{base}/settings/{currentModel.id}"
-							onclick={(e) => {
-								if (requireAuthUser()) {
-									e.preventDefault();
-								}
-							}}
-							class="inline-flex items-center gap-1 hover:underline"
-						>
-							{#if currentModel.isRouter}
-								<IconOmni />
-								{currentModel.displayName}
-							{:else}
-								Model: {currentModel.displayName}
-								{#if hasProviderOverride}
-									{@const hubOrg =
-										PROVIDERS_HUB_ORGS[providerOverride as keyof typeof PROVIDERS_HUB_ORGS]}
-									<span
-										class="inline-flex shrink-0 items-center rounded p-0.5 {providerOverride ===
-										'fastest'
-											? 'bg-green-100 text-green-600 dark:bg-green-800/20 dark:text-green-500'
-											: providerOverride === 'cheapest'
-												? 'bg-blue-100 text-blue-600 dark:bg-blue-800/20 dark:text-blue-500'
-												: ''}"
-										title="Provider: {providerOverride}"
-									>
-										{#if providerOverride === "fastest"}
-											<IconFast classNames="text-sm" />
-										{:else if providerOverride === "cheapest"}
-											<IconCheap classNames="text-sm" />
-										{:else if hubOrg}
-											<img
-												src="https://huggingface.co/api/avatars/{hubOrg}"
-												alt={providerOverride}
-												class="size-3 flex-none rounded-sm"
-											/>
-										{/if}
-									</span>
-								{/if}
-							{/if}
-							<CarbonCaretDown class="-ml-0.5 text-xxs" />
-						</a>
-					{:else if showRouterDetails && streamingRouterMetadata?.route}
-						<div
-							class="mr-2 flex items-center gap-1.5 whitespace-nowrap text-[.70rem] text-xs leading-none text-gray-400 dark:text-gray-400"
-						>
-							<IconOmni classNames="text-xs animate-pulse" />
-
-							<span class="router-badge-text router-shimmer">
-								{streamingRouterMetadata.route}
-							</span>
-
-							<span class="text-gray-500">with</span>
-
-							<span class="router-badge-text">
-								{streamingRouterModelName}
-							</span>
-						</div>
-					{:else}
-						<div
-							class="loading-dots relative inline-flex items-center text-gray-400 dark:text-gray-400"
-							aria-label="Routing…"
-						>
-							<IconOmni classNames="text-xs animate-pulse mr-1" /> Routing
-						</div>
-					{/if}
-				{:else}
-					<span class="inline-flex items-center line-through dark:border-gray-700">
-						{currentModel.id}
-					</span>
-				{/if}
-				{#if !messages.length && !loading}
-					<span class="max-sm:hidden">Generated content may be inaccurate or false.</span>
-				{/if}
-			</div>
+			
 		</div>
 	</div>
 </div>

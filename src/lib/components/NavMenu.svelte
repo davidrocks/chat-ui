@@ -150,9 +150,7 @@
 <div
 	class="scrollbar-custom flex touch-pan-y flex-col gap-1 overflow-y-auto rounded-r-xl border border-l-0 border-gray-100 from-gray-50 px-3 pb-3 pt-2 text-[.9rem] dark:border-transparent dark:from-gray-800/30 max-sm:bg-gradient-to-t md:bg-gradient-to-l"
 >
-    <div class="flex flex-col gap-0.5 pb-4">
-        <a href="https://www.prettysmellslab.com" class=""><h4>Return to Store >></h4></a>
-    </div>
+
 	<div class="flex flex-col gap-0.5">
 
     
@@ -219,17 +217,6 @@
 			{/if}
 		</div>
 	{/if}
-	<a
-		href="{base}/models"
-		class="flex h-9 flex-none items-center gap-1.5 rounded-lg pl-2 pr-2 text-gray-500 hover:bg-gray-100 sm:h-[2.08rem] dark:text-gray-400 dark:hover:bg-gray-700"
-		onclick={handleNavItemClick}
-	>
-		Models
-		<span
-			class="ml-auto rounded-md bg-gray-500/5 px-1.5 py-0.5 text-xs text-gray-400 dark:bg-gray-500/20 dark:text-gray-400"
-			>{nModels}</span
-		>
-	</a>
 
 	{#if user?.username || user?.email}
 		<button
@@ -248,28 +235,16 @@
 	{/if}
 
 	<span class="flex gap-1">
+
+
 		<a
-			href="{base}/settings/application"
-			class="flex h-9 flex-none flex-grow items-center gap-1.5 rounded-lg pl-2 pr-2 text-gray-500 hover:bg-gray-100 dark:text-gray-400 dark:hover:bg-gray-700"
+			href="https://www.prettysmellslab.com"
+			class="flex h-9 flex-none flex-grow items-center gap-1.5 rounded-lg pl-2 pr-2 text-gray-500 hover:bg-gray-100 dark:text-gray-100 dark:hover:bg-gray-700"
 			onclick={handleNavItemClick}
 		>
-			Settings
+			Return to Store >>
 		</a>
-		<button
-			onclick={() => {
-				switchTheme();
-			}}
-			aria-label="Toggle theme"
-			class="flex size-9 min-w-[1.5em] flex-none items-center justify-center rounded-lg p-2 text-gray-500 hover:bg-gray-100 dark:text-gray-400 dark:hover:bg-gray-700"
-		>
-			{#if browser}
-				{#if isDark}
-					<IconSun />
-				{:else}
-					<IconMoon />
-				{/if}
-			{/if}
-		</button>
+		
 	</span>
 </div>
 

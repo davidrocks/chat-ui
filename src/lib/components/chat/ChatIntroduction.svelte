@@ -19,23 +19,25 @@
 	});
 </script>
 
-<div class="mt-13 grid items-start justify-left gap-6 px-4 md:mt-32">
-    <div class="flex flex-col select-none items-start text-3xl font-bold md:text-4xl">
-   
-        <h3 class="font-thin tracking-tight text-gray-900 dark:text-white ">
-            Pretty Smells Chat Demo
-        </h3>
+<div class="mt-13 grid items-start justify-left gap-6 px-0 md:mt-32">
+
+    <div class="flex flex-col select-none items-start">
+        <h1 class="font-thin tracking-tight text-gray-900 dark:text-white text-5xl md:text-6xl leading-[1.05]">
+            Pretty Smells<br>Lab AI
+        </h1>
     </div>
 
-    <div class="max-w-2xl space-y-6 text-left my-2">
+    <div class="max-w-2xl space-y-2 text-left">
         <div>
-            <p class="text-lg text-gray-600 dark:text-gray-400 py-3">
-               Upload an image of your scents, or tell us what you like, and we will do the rest.
+            <p class="text text-gray-900 dark:text-gray-300 py-1">
+               Upload an image of your scents, or tell us what you like, and our AI will match you with new scents.
             </p>            
 
-            <p class="text-lg text-gray-600 dark:text-gray-400 py-3">
-                All recommended fragrances are in stock and available for immediate delivery from our store.
+            <p class="text text-gray-600 dark:text-gray-300 py-2">
+                All recommended fragrances are in stock and available for immediate delivery from from <a href="https://www.prettysmellslab.com" style="text-decoration: underline;" >our store</a>.
             </p>
         </div>
+
+                  
     </div>
 </div>

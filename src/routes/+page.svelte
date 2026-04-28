@@ -121,7 +121,7 @@
 
 			const query = sanitizeUrlParam(page.url.searchParams.get("q"));
 			if (query) {
-				void createConversation(query);
+				draft = query;                    // ← only pre-fills the input box
 				const url = new URL(page.url);
 				url.searchParams.delete("q");
 				tick().then(() => {
