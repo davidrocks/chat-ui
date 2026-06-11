@@ -76,34 +76,14 @@ export async function endpointOai(
 	// Store router metadata if captured
 	let routerMetadata: { route?: string; model?: string; provider?: string } = {};
 
-	// Custom fetch wrapper to capture response headers for router metadata
-    function cleanFetchHeaders(inputHeaders: HeadersInit | undefined): Headers {
-        const headers = new Headers(inputHeaders);
+    const customFetch = async (url: RequestInfo, init?: RequestInit): Promise<Response> => {
+        const headers = new Headers(init?.headers);
+        headers.delete("content-length");
 
-        const blockedHeaders = [
-            "content-length",
-            "transfer-encoding",
-            "host",
-            "connection",
-            "accept-encoding"
-        ];
-
-        for (const headerName of blockedHeaders) {
-            headers.delete(headerName);
-        }
-
-        return headers;
-    }
-
-    const customFetch = async (url: RequestInfo | URL, init?: RequestInit): Promise<Response> => {
-        let cleanInit: RequestInit | undefined = undefined;
-
-        if (init) {
-            cleanInit = {
-                ...init,
-                headers: cleanFetchHeaders(init.headers)
-            };
-        }
+        const cleanInit: RequestInit = {
+            ...init,
+            headers
+        };
 
         const response = await fetch(url, cleanInit);
 
@@ -115,11 +95,11 @@ export async function endpointOai(
             routerMetadata = {
                 route: routeHeader,
                 model: modelHeader,
-                provider: providerHeader || undefined
+                provider: providerHeader || undefined,
             };
         } else if (providerHeader) {
             routerMetadata = {
-                provider: providerHeader
+                provider: providerHeader,
             };
         }
 
