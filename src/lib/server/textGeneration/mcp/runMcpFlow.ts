@@ -2,7 +2,6 @@ import { config } from "$lib/server/config";
 import { MessageUpdateType, type MessageUpdate } from "$lib/types/MessageUpdate";
 import { getMcpServers } from "$lib/server/mcp/registry";
 import { isValidUrl } from "$lib/server/urlSafety";
-import { resetMcpToolsCache } from "$lib/server/mcp/tools";
 import { getOpenAiToolsForMcp } from "$lib/server/mcp/tools";
 import type {
 	ChatCompletionChunk,
@@ -15,7 +14,6 @@ import { buildToolPreprompt } from "../utils/toolPrompt";
 import type { EndpointMessage } from "../../endpoints/endpoints";
 import { resolveRouterTarget } from "./routerResolution";
 import { executeToolCalls, type NormalizedToolCall } from "./toolInvocation";
-import { drainPool } from "$lib/server/mcp/clientPool";
 import type { TextGenerationContext } from "../types";
 import {
 	hasAuthHeader,
@@ -99,8 +97,6 @@ export async function* runMcpFlow({
 		)?.mcp;
 		const custom = Array.isArray(reqMcp?.selectedServers) ? reqMcp?.selectedServers : [];
 		if (custom.length > 0) {
-			// Invalidate cached tool list when the set of servers changes at request-time
-			resetMcpToolsCache();
 			// Deduplicate by server name (request takes precedence)
 			const byName = new Map<
 				string,
@@ -773,10 +769,10 @@ export async function* runMcpFlow({
 			return "aborted";
 		}
 		logger.warn({ err: msg }, "[mcp] flow failed, falling back to default endpoint");
-	} finally {
-		// ensure MCP clients are closed after the turn
-		await drainPool();
 	}
+	// Note: pooled MCP clients are shared across concurrent requests, so they must NOT be
+	// closed here — that rejects other turns' in-flight tool calls with "-32000 Connection
+	// closed". Idle clients are reclaimed by the pool's sweeper instead (see clientPool.ts).
 
 	return "not_applicable";
 }
