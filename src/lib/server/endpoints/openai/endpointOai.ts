@@ -77,29 +77,54 @@ export async function endpointOai(
 	let routerMetadata: { route?: string; model?: string; provider?: string } = {};
 
 	// Custom fetch wrapper to capture response headers for router metadata
-	const customFetch = async (url: RequestInfo, init?: RequestInit): Promise<Response> => {
-		const response = await fetch(url, init);
+    function cleanFetchHeaders(inputHeaders: HeadersInit | undefined): Headers {
+        const headers = new Headers(inputHeaders);
 
-		// Capture router headers if present (fallback for non-streaming)
-		const routeHeader = response.headers.get("X-Router-Route");
-		const modelHeader = response.headers.get("X-Router-Model");
-		const providerHeader = response.headers.get("x-inference-provider");
+        const blockedHeaders = [
+            "content-length",
+            "transfer-encoding",
+            "host",
+            "connection",
+            "accept-encoding"
+        ];
 
-		if (routeHeader && modelHeader) {
-			routerMetadata = {
-				route: routeHeader,
-				model: modelHeader,
-				provider: providerHeader || undefined,
-			};
-		} else if (providerHeader) {
-			// Even without router metadata, capture provider info
-			routerMetadata = {
-				provider: providerHeader,
-			};
-		}
+        for (const headerName of blockedHeaders) {
+            headers.delete(headerName);
+        }
 
-		return response;
-	};
+        return headers;
+    }
+
+    const customFetch = async (url: RequestInfo | URL, init?: RequestInit): Promise<Response> => {
+        let cleanInit: RequestInit | undefined = undefined;
+
+        if (init) {
+            cleanInit = {
+                ...init,
+                headers: cleanFetchHeaders(init.headers)
+            };
+        }
+
+        const response = await fetch(url, cleanInit);
+
+        const routeHeader = response.headers.get("X-Router-Route");
+        const modelHeader = response.headers.get("X-Router-Model");
+        const providerHeader = response.headers.get("x-inference-provider");
+
+        if (routeHeader && modelHeader) {
+            routerMetadata = {
+                route: routeHeader,
+                model: modelHeader,
+                provider: providerHeader || undefined
+            };
+        } else if (providerHeader) {
+            routerMetadata = {
+                provider: providerHeader
+            };
+        }
+
+        return response;
+    };
 
 	const openai = new OpenAI({
 		apiKey: apiKey || "sk-",
@@ -152,7 +177,9 @@ export async function endpointOai(
 				headers: {
 					"ChatUI-Conversation-ID": conversationId?.toString() ?? "",
 					"X-use-cache": "false",
-					...(locals?.token ? { Authorization: `Bearer ${locals.token}` } : {}),
+					...(config.USE_USER_TOKEN === "true" && locals?.token
+						? { Authorization: `Bearer ${locals.token}` }
+						: {}),
 					// Bill to organization if configured
 					...(locals?.billingOrganization ? { "X-HF-Bill-To": locals.billingOrganization } : {}),
 				},
@@ -171,6 +198,7 @@ export async function endpointOai(
 			locals,
 			abortSignal,
 			provider,
+			reasoningEffort,
 		}) => {
 			// Format messages for the chat API, handling multimodal content if supported
 			let messagesOpenAI: OpenAI.Chat.Completions.ChatCompletionMessageParam[] =
@@ -219,6 +247,7 @@ export async function endpointOai(
 				top_p: parameters?.top_p,
 				frequency_penalty: parameters?.frequency_penalty,
 				presence_penalty: parameters?.presence_penalty,
+				...(reasoningEffort ? { reasoning_effort: reasoningEffort } : {}),
 			};
 
 			// Handle both streaming and non-streaming responses with appropriate processors
@@ -230,7 +259,9 @@ export async function endpointOai(
 						headers: {
 							"ChatUI-Conversation-ID": conversationId?.toString() ?? "",
 							"X-use-cache": "false",
-							...(locals?.token ? { Authorization: `Bearer ${locals.token}` } : {}),
+							...(config.USE_USER_TOKEN === "true" && locals?.token
+								? { Authorization: `Bearer ${locals.token}` }
+								: {}),
 							// Bill to organization if configured
 							...(locals?.billingOrganization
 								? { "X-HF-Bill-To": locals.billingOrganization }
@@ -248,7 +279,9 @@ export async function endpointOai(
 						headers: {
 							"ChatUI-Conversation-ID": conversationId?.toString() ?? "",
 							"X-use-cache": "false",
-							...(locals?.token ? { Authorization: `Bearer ${locals.token}` } : {}),
+							...(config.USE_USER_TOKEN === "true" && locals?.token
+								? { Authorization: `Bearer ${locals.token}` }
+								: {}),
 							// Bill to organization if configured
 							...(locals?.billingOrganization
 								? { "X-HF-Bill-To": locals.billingOrganization }

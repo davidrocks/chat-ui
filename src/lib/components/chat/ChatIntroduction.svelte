@@ -22,8 +22,9 @@
 <div class="mt-13 grid items-start justify-left gap-6 px-0 md:mt-32">
 
     <div class="flex flex-col select-none items-start">
-        <h1 class="font-thin tracking-tight text-gray-900 dark:text-white text-5xl md:text-6xl leading-[1.05]">
-            Pretty Smells<br>Lab AI
+        <h1 class="font-thin tracking-tight text-gray-900 dark:text-white text-6xl md:text-6xl leading-[1.05]">
+            The Pretty<br>
+            Smells Lab
         </h1>
     </div>
 

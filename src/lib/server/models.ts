@@ -1,3 +1,4 @@
+import { building } from "$app/environment";
 import { config } from "$lib/server/config";
 import type { ChatTemplateInput } from "$lib/types/Template";
 import { z } from "zod";
@@ -58,6 +59,11 @@ const modelConfig = z.object({
 	multimodalAcceptedMimetypes: z.array(z.string()).optional(),
 	// Aggregated tool-calling capability across providers (HF router)
 	supportsTools: z.boolean().default(false),
+	// Reasoning-capable model (accepts `reasoning_effort` parameter)
+	supportsReasoning: z.boolean().default(false),
+	// Opt-in artifacts: when true, the model is instructed to emit <artifact>
+	// blocks rendered in the side panel. Set per model via MODELS overrides.
+	supportsArtifacts: z.boolean().default(false),
 	unlisted: z.boolean().default(false),
 	embeddingModel: z.never().optional(),
 	/** Used to enable/disable system prompt usage */
@@ -237,6 +243,8 @@ const signatureForModel = (model: ProcessedModel) =>
 		multimodal: model.multimodal,
 		multimodalAcceptedMimetypes: model.multimodalAcceptedMimetypes,
 		supportsTools: (model as unknown as { supportsTools?: boolean }).supportsTools ?? false,
+		supportsReasoning:
+			(model as unknown as { supportsReasoning?: boolean }).supportsReasoning ?? false,
 		isRouter: model.isRouter,
 		hasInferenceAPI: model.hasInferenceAPI,
 	});
@@ -406,7 +414,7 @@ const buildModels = async (): Promise<ProcessedModel[]> => {
 			)
 		);
 
-		const archBase = (config.LLM_ROUTER_ARCH_BASE_URL || "").trim();
+		const routerRoutesPath = (config.LLM_ROUTER_ROUTES_PATH || "").trim();
 		const routerLabel = (config.PUBLIC_LLM_ROUTER_DISPLAY_NAME || "Omni").trim() || "Omni";
 		const routerLogo = (config.PUBLIC_LLM_ROUTER_LOGO_URL || "").trim();
 		const routerAliasId = (config.PUBLIC_LLM_ROUTER_ALIAS_ID || "omni").trim() || "omni";
@@ -416,7 +424,7 @@ const buildModels = async (): Promise<ProcessedModel[]> => {
 
 		let decorated = builtModels as ProcessedModel[];
 
-		if (archBase) {
+		if (routerRoutesPath) {
 			// Build a minimal model config for the alias
 			const aliasRaw = {
 				id: routerAliasId,
@@ -442,6 +450,18 @@ const buildModels = async (): Promise<ProcessedModel[]> => {
 
 			if (routerToolsEnabled) {
 				aliasRaw.supportsTools = true;
+			}
+
+			// Apply MODELS overrides to the router alias too, so flags like
+			// supportsArtifacts can be set on it like on any other model
+			const aliasOverride = getModelOverrides().find(
+				(o) => o.id?.trim() === routerAliasId || o.name?.trim() === routerAliasId
+			);
+			if (aliasOverride) {
+				const { id, name, ...rest } = aliasOverride;
+				void id;
+				void name;
+				Object.assign(aliasRaw, rest);
 			}
 
 			const aliasBase = await processModel(aliasRaw);
@@ -471,7 +491,12 @@ const rebuildModels = async (): Promise<ModelsRefreshSummary> => {
 	return applyModelState(newModels, startedAt);
 };
 
-await rebuildModels();
+// Skip the initial fetch during `vite build`: SvelteKit's analyse phase imports this
+// module, and hitting the live router from CI builds fails on rate limits (429).
+// The cache is built at server startup instead.
+if (!building) {
+	await rebuildModels();
+}
 
 export const refreshModels = async (): Promise<ModelsRefreshSummary> => {
 	if (inflightRefresh) {

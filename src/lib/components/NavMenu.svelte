@@ -153,11 +153,9 @@
 
 	<div class="flex flex-col gap-0.5">
 
-    
-
 		{#each Object.entries(groupedConversations) as [group, convs]}
 			{#if convs.length}
-				<h4 class="mb-1.5 mt-4 pl-0.5 text-sm text-gray-400 first:mt-0 dark:text-gray-500">
+				<h4 class="mb-1.5 mt-4 pl-0.5 text-xs text-gray-400 first:mt-0 dark:text-gray-500">
 					{titles[group]}
 				</h4>
 				{#each convs as conv}
@@ -171,11 +169,11 @@
 	{/if}
 </div>
 <div
-	class="flex touch-none flex-col gap-1 rounded-r-xl border border-l-0 border-gray-100 p-3 text-sm dark:border-transparent md:mt-3 md:bg-gradient-to-l md:from-gray-50 md:dark:from-gray-800/30"
+	class="flex touch-none flex-col gap-px rounded-r-xl border border-l-0 border-gray-100 p-3 text-base dark:border-transparent sm:text-sm md:mt-3 md:bg-gradient-to-l md:from-gray-50 md:dark:from-gray-800/30"
 >
 	{#if user?.username || user?.email}
 		<div
-			class="group flex h-9 items-center gap-1.5 rounded-lg pl-2 pr-2 hover:bg-gray-100 first:hover:bg-transparent sm:h-[2.08rem] dark:hover:bg-gray-700 first:dark:hover:bg-transparent"
+			class="group flex h-8 items-center gap-1.5 rounded-lg pl-2 pr-2 hover:bg-gray-100 first:hover:bg-transparent dark:hover:bg-gray-700 first:dark:hover:bg-transparent max-sm:h-10"
 		>
 			<img
 				src="https://huggingface.co/api/users/{user.username}/avatar?redirect=true"
@@ -221,7 +219,7 @@
 	{#if user?.username || user?.email}
 		<button
 			onclick={() => (showMcpModal = true)}
-			class="flex h-9 flex-none items-center gap-1.5 rounded-lg pl-2 pr-2 text-gray-500 hover:bg-gray-100 sm:h-[2.08rem] dark:text-gray-400 dark:hover:bg-gray-700"
+			class="flex h-8 flex-none items-center gap-1.5 rounded-lg pl-2 pr-2 text-gray-500 hover:bg-gray-100 dark:text-gray-400 dark:hover:bg-gray-700 max-sm:h-10"
 		>
 			MCP Servers
 			{#if $enabledServersCount > 0}
@@ -234,12 +232,10 @@
 		</button>
 	{/if}
 
-	<span class="flex gap-1">
-
-
+	<span class="flex gap-px">
 		<a
 			href="https://www.prettysmellslab.com"
-			class="flex h-9 flex-none flex-grow items-center gap-1.5 rounded-lg pl-2 pr-2 text-gray-500 hover:bg-gray-100 dark:text-gray-100 dark:hover:bg-gray-700"
+			class="flex h-8 flex-none flex-grow items-center gap-1.5 rounded-lg pl-2 pr-2 text-gray-500 hover:bg-gray-100 dark:text-gray-400 dark:hover:bg-gray-700 max-sm:h-10"
 			onclick={handleNavItemClick}
 		>
 			Return to Store >>

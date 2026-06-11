@@ -1,6 +1,7 @@
 import { collections } from "$lib/server/database";
 import { z } from "zod";
 import { authCondition } from "$lib/server/auth";
+import { config } from "$lib/server/config";
 import { DEFAULT_SETTINGS, type SettingsEditable } from "$lib/types/Settings";
 import { resolveStreamingMode } from "$lib/utils/messageUpdates";
 
@@ -14,7 +15,10 @@ const settingsSchema = z.object({
 	customPromptsEnabled: z.record(z.boolean()).default({}),
 	multimodalOverrides: z.record(z.boolean()).default({}),
 	toolsOverrides: z.record(z.boolean()).default({}),
+	artifactsOverrides: z.record(z.boolean()).default({}),
 	providerOverrides: z.record(z.string()).default({}),
+	reasoningEffortOverrides: z.record(z.enum(["low", "medium", "high"])).default({}),
+	reasoningOverrides: z.record(z.boolean()).default({}),
 	streamingMode: z.enum(["raw", "smooth"]).optional(),
 	directPaste: z.boolean().default(false),
 	hapticsEnabled: z.boolean().default(true),
@@ -27,6 +31,13 @@ export async function POST({ request, locals }) {
 
 	const { welcomeModalSeen, ...parsedSettings } = settingsSchema.parse(body);
 	const streamingMode = resolveStreamingMode(parsedSettings);
+
+	if (config.isHuggingChat) {
+		parsedSettings.multimodalOverrides = {};
+		parsedSettings.toolsOverrides = {};
+		parsedSettings.reasoningOverrides = {};
+	}
+
 	const settings = {
 		...parsedSettings,
 		streamingMode,

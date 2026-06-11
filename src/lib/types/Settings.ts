@@ -3,6 +3,7 @@ import type { Timestamps } from "./Timestamps";
 import type { User } from "./User";
 
 export type StreamingMode = "raw" | "smooth";
+export type ReasoningEffort = "low" | "medium" | "high";
 
 export interface Settings extends Timestamps {
 	userId?: User["_id"];
@@ -36,6 +37,13 @@ export interface Settings extends Timestamps {
 	toolsOverrides?: Record<string, boolean>;
 
 	/**
+	 * Per-model artifacts toggle. Overrides the model's `supportsArtifacts`
+	 * config flag in both directions: `true` enables artifacts on an unflagged
+	 * model, `false` disables them on a flagged one.
+	 */
+	artifactsOverrides?: Record<string, boolean>;
+
+	/**
 	 * Per-model toggle to hide Omni prompt suggestions shown near the composer.
 	 * When set to `true`, prompt examples for that model are suppressed.
 	 */
@@ -47,6 +55,18 @@ export interface Settings extends Timestamps {
 	 * The value is appended to the model ID when making inference requests (e.g., "model:fastest").
 	 */
 	providerOverrides?: Record<string, string>;
+
+	/**
+	 * Per-model thinking effort. Sent as `reasoning_effort` to the OpenAI-compatible
+	 * endpoint when set; omitted (provider default) when missing.
+	 */
+	reasoningEffortOverrides?: Record<string, ReasoningEffort>;
+
+	/**
+	 * Per-model override for whether the Reasoning-effort UI should appear and
+	 * `reasoning_effort` should be forwarded. Falls back to `model.supportsReasoning`.
+	 */
+	reasoningOverrides?: Record<string, boolean>;
 
 	/**
 	 * Preferred assistant output behavior in the chat UI.
@@ -73,13 +93,17 @@ export type SettingsEditable = Omit<Settings, "welcomeModalSeenAt" | "createdAt"
 // TODO: move this to a constant file along with other constants
 export const DEFAULT_SETTINGS = {
 	shareConversationsWithModelAuthors: true,
-	activeModel: defaultModel.id,
+	// defaultModel is unset during `vite build` (models aren't fetched at build time)
+	activeModel: defaultModel?.id ?? "",
 	customPrompts: {},
 	customPromptsEnabled: {},
 	multimodalOverrides: {},
 	toolsOverrides: {},
+	artifactsOverrides: {},
 	hidePromptExamples: {},
 	providerOverrides: {},
+	reasoningEffortOverrides: {},
+	reasoningOverrides: {},
 	streamingMode: "smooth",
 	directPaste: false,
 	hapticsEnabled: true,

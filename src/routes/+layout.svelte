@@ -1,30 +1,27 @@
 <script lang="ts">
 	import "../styles/main.css";
 
-	import { onDestroy, onMount, untrack } from "svelte";
+	import { onDestroy, onMount } from "svelte";
 	import { goto } from "$app/navigation";
 	import { base } from "$app/paths";
 	import { page } from "$app/state";
 
 	import { error } from "$lib/stores/errors";
 	import { createSettingsStore } from "$lib/stores/settings";
-	import { loading } from "$lib/stores/loading";
 	import { setHapticsEnabled } from "$lib/utils/haptics";
 
 	import Toast from "$lib/components/Toast.svelte";
 	import NavMenu from "$lib/components/NavMenu.svelte";
 	import MobileNav from "$lib/components/MobileNav.svelte";
-	import titleUpdate from "$lib/stores/titleUpdate";
 	import WelcomeModal from "$lib/components/WelcomeModal.svelte";
 	import ExpandNavigation from "$lib/components/ExpandNavigation.svelte";
 	import { setContext } from "svelte";
 	import { handleResponse, useAPIClient } from "$lib/APIClient";
 	import { isAborted } from "$lib/stores/isAborted";
 	import { isPro } from "$lib/stores/isPro";
-	import IconShare from "$lib/components/icons/IconShare.svelte";
-	import { shareModal } from "$lib/stores/shareModal";
 	import BackgroundGenerationPoller from "$lib/components/BackgroundGenerationPoller.svelte";
 	import { requireAuthUser } from "$lib/utils/auth";
+	import { createConversationsStore } from "$lib/stores/conversations.svelte";
 
 	let { data = $bindable(), children } = $props();
 
@@ -33,9 +30,15 @@
 	const publicConfig = data.publicConfig;
 	const client = useAPIClient();
 
-	let conversations = $state(data.conversations);
+	const convsStore = createConversationsStore();
+	// Synchronous seed for SSR: $effect is stripped by the server-side compiler,
+	// so we must call init() immediately to populate the list on first paint.
+	// The $effect below handles client-side resyncs when data.conversations
+	// reference changes after subsequent invalidations.
+	// Last-write-wins from server is acceptable; see conversations.svelte.ts.
+	convsStore.init(data.conversations);
 	$effect(() => {
-		data.conversations && untrack(() => (conversations = data.conversations));
+		convsStore.init(data.conversations);
 	});
 
 	let isNavCollapsed = $state(false);
@@ -59,19 +62,13 @@
 		}, 5000);
 	}
 
-	let canShare = $derived(
-		publicConfig.isHuggingChat &&
-			Boolean(page.params?.id) &&
-			page.route.id?.startsWith("/conversation/")
-	);
-
 	async function deleteConversation(id: string) {
 		client
 			.conversations({ id })
 			.delete()
 			.then(handleResponse)
 			.then(async () => {
-				conversations = conversations.filter((conv) => conv.id !== id);
+				convsStore.remove(id);
 
 				if (page.params.id === id) {
 					await goto(`${base}/`, { invalidateAll: true });
@@ -89,7 +86,7 @@
 			.patch({ title })
 			.then(handleResponse)
 			.then(async () => {
-				conversations = conversations.map((conv) => (conv.id === id ? { ...conv, title } : conv));
+				convsStore.update(id, { title });
 			})
 			.catch((err) => {
 				console.error(err);
@@ -108,18 +105,6 @@
 
 	$effect(() => {
 		if ($error) onError();
-	});
-
-	$effect(() => {
-		if ($titleUpdate) {
-			const convIdx = conversations.findIndex(({ id }) => id === $titleUpdate?.convId);
-
-			if (convIdx != -1) {
-				conversations[convIdx].title = $titleUpdate?.title ?? conversations[convIdx].title;
-			}
-
-			$titleUpdate = null;
-		}
 	});
 
 	const settings = createSettingsStore(data.settings);
@@ -188,13 +173,20 @@
 	let mobileNavTitle = $derived(
 		["/models", "/privacy"].includes(page.route.id ?? "")
 			? ""
-			: conversations.find((conv) => conv.id === page.params.id)?.title
+			: convsStore.list.find((conv) => conv.id === page.params.id)?.title
 	);
 
 	// Show the welcome modal once on first app load
 	let showWelcome = $derived(
 		!$settings.welcomeModalSeen &&
 			!(page.data.shared === true && page.route.id?.startsWith("/conversation/"))
+	);
+
+	// Shared conversation views define their own social preview tags
+	// (see SharePreviewTags.svelte), so skip the generic ones there
+	let isSharedConversationView = $derived(
+		page.route.id === "/r/[id]" ||
+			(page.route.id === "/conversation/[id]" && page.params.id?.length === 7)
 	);
 </script>
 
@@ -205,7 +197,7 @@
 
 	<!-- use those meta tags everywhere except on special listing pages -->
 	<!-- feel free to refacto if there's a better way -->
-	{#if !page.url.pathname.includes("/models/")}
+	{#if !page.url.pathname.includes("/models/") && !isSharedConversationView}
 		<meta name="twitter:card" content="summary_large_image" />
 		<meta name="twitter:title" content="{publicConfig.PUBLIC_APP_NAME} - Chat with AI models" />
 		<meta name="twitter:description" content={publicConfig.PUBLIC_APP_DESCRIPTION} />
@@ -252,9 +244,6 @@
 	{/if}
 </svelte:head>
 
-{#if showWelcome}
-	<WelcomeModal close={closeWelcomeModal} />
-{/if}
 
 <BackgroundGenerationPoller />
 
@@ -271,22 +260,9 @@
 			: 'left-0'} *:transition-transform"
 	/>
 
-	{#if canShare}
-		<button
-			type="button"
-			class="hidden size-8 items-center justify-center gap-2 rounded-xl border border-gray-200 bg-white/90 text-sm font-medium text-gray-700 shadow-sm hover:bg-white/60 hover:text-gray-500 dark:border-gray-700 dark:bg-gray-800/80 dark:text-gray-200 dark:hover:bg-gray-700 md:absolute md:right-6 md:top-5 md:flex
-				{$loading ? 'cursor-not-allowed opacity-40' : ''}"
-			onclick={() => shareModal.open()}
-			aria-label="Share conversation"
-			disabled={$loading}
-		>
-			<IconShare />
-		</button>
-	{/if}
-
 	<MobileNav title={mobileNavTitle}>
 		<NavMenu
-			{conversations}
+			conversations={convsStore.list}
 			user={data.user}
 			ondeleteConversation={(id) => deleteConversation(id)}
 			oneditConversationTitle={(payload) => editConversationTitle(payload.id, payload.title)}
@@ -296,7 +272,7 @@
 		class="grid max-h-dvh grid-cols-1 grid-rows-[auto,1fr,auto] overflow-hidden *:w-[290px] max-md:hidden"
 	>
 		<NavMenu
-			{conversations}
+			conversations={convsStore.list}
 			user={data.user}
 			ondeleteConversation={(id) => deleteConversation(id)}
 			oneditConversationTitle={(payload) => editConversationTitle(payload.id, payload.title)}

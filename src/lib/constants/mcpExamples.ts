@@ -7,6 +7,26 @@ export const mcpExamples: RouterExample[] = [
 		prompt: "Generate an image of a zebra in front of a volcanic eruption",
 	},
 	{
+		title: "Celebrate 3M models",
+		artifact: true,
+		prompt:
+			"Build a small celebration card with TailwindCSS for Hugging Face crossing 3 million models, with an animated counter and confetti, in a single compact HTML file",
+		followUps: [
+			{
+				title: "Trending models",
+				prompt: "Add a line showing today's top 3 trending models on Hugging Face",
+			},
+			{
+				title: "Surprise me",
+				prompt: "Redesign it in a completely different visual style, surprise me",
+			},
+			{
+				title: "Confetti burst",
+				prompt: "Make confetti burst from the card when I click it",
+			},
+		],
+	},
+	{
 		title: "Latest world news",
 		prompt: "What is the latest world news?",
 		followUps: [
