@@ -444,7 +444,7 @@
 	function triggerPrompt(prompt: string) {
 		if (requireAuthUser() || loading) return;
 		draft = prompt;
-		handleSubmit();
+		// handleSubmit();
 	}
 
 	async function startExample(example: RouterExample) {
@@ -565,7 +565,7 @@
 		bind:this={chatContainer}
 	>
 		<div
-			class="mx-auto flex h-full max-w-3xl flex-col gap-6 px-5 pt-6 sm:gap-8 xl:max-w-4xl xl:pt-10"
+			 class="mx-auto flex h-full max-w-3xl flex-col gap-6 px-3 pt-6 sm:gap-8 xl:max-w-4xl xl:pt-10"
 		>
 			{#if preprompt && preprompt != currentModel.preprompt}
 				<SystemPromptModal preprompt={preprompt ?? ""} />
@@ -622,11 +622,11 @@
 	<div
 		class="pointer-events-none absolute inset-x-0 bottom-0 z-0 mx-auto flex w-full
 			max-w-3xl flex-col items-center justify-center bg-gradient-to-t from-white
-			via-white/100 to-white/0 px-3.5 pt-2 dark:border-gray-800
+			via-white/100 to-white/0 px-3 pt-2 dark:border-gray-800
 			dark:from-gray-900 dark:via-gray-900/100
 			dark:to-gray-900/0 max-sm:py-0 sm:px-5 md:pb-4 xl:max-w-4xl [&>*]:pointer-events-auto"
 	>
-		{#if !draft.length && !messages.length && !sources.length && !loading && (currentModel.isRouter || (modelSupportsTools && $allBaseServersEnabled)) && activeExamples.length && !hideRouterExamples && !lastIsError && $mcpServersLoaded}
+		{#if !draft.length && !messages.length && !sources.length && !loading && activeExamples.length && !lastIsError}
 			<div
 				class="no-scrollbar mb-3 flex w-full select-none justify-start gap-2 overflow-x-auto whitespace-nowrap text-gray-400 dark:text-gray-500"
 			>
