@@ -31,7 +31,7 @@
     <div class="max-w-2xl space-y-2 text-left">
         <div>
             <p class="text text-gray-900 dark:text-gray-300 py-1">
-               Upload an image of your scents, or tell us what you like, and our AI will match you with new scents.
+               Upload an image of your scents, or tell us what you like and our AI will match you with new scents.
             </p>            
 
             <p class="text text-gray-600 dark:text-gray-300 py-2">
