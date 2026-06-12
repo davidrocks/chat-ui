@@ -252,9 +252,6 @@
 	{/if}
 </svelte:head>
 
-{#if showWelcome}
-	<WelcomeModal close={closeWelcomeModal} />
-{/if}
 
 <BackgroundGenerationPoller />
 
