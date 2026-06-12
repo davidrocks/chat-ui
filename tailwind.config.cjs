@@ -65,6 +65,10 @@ module.exports = {
 				},
 			}),
 		},
+        fontFamily: {
+            // This adds 'Instrument Sans' as the primary sans font
+            sans: ['"Instrument Sans"', 'ui-sans-serif', 'system-ui', 'sans-serif'],
+        },
 	},
 	plugins: [
 		require("tailwind-scrollbar")({ nocompatible: true }),

@@ -136,7 +136,6 @@
 		class="flex select-none items-center rounded-xl text-lg font-semibold"
 		href="{publicConfig.PUBLIC_ORIGIN}{base}/"
 	>
-		<Logo classNames="dark:invert mr-[2px]" />
 		{publicConfig.PUBLIC_APP_NAME}
 	</a>
 	<a
@@ -215,17 +214,7 @@
 			{/if}
 		</div>
 	{/if}
-	<a
-		href="{base}/models"
-		class="flex h-8 flex-none items-center gap-1.5 rounded-lg pl-2 pr-2 text-gray-500 hover:bg-gray-100 dark:text-gray-400 dark:hover:bg-gray-700 max-sm:h-10"
-		onclick={handleNavItemClick}
-	>
-		Models
-		<span
-			class="ml-auto rounded-md bg-gray-500/5 px-1.5 py-0.5 text-xs text-gray-400 dark:bg-gray-500/20 dark:text-gray-400"
-			>{nModels}</span
-		>
-	</a>
+
 
 	{#if user?.username || user?.email}
 		<button
@@ -245,27 +234,12 @@
 
 	<span class="flex gap-px">
 		<a
-			href="{base}/settings/application"
+			href="https://www.prettysmellslab.com"
 			class="flex h-8 flex-none flex-grow items-center gap-1.5 rounded-lg pl-2 pr-2 text-gray-500 hover:bg-gray-100 dark:text-gray-400 dark:hover:bg-gray-700 max-sm:h-10"
 			onclick={handleNavItemClick}
 		>
-			Settings
+			Return to Store >>
 		</a>
-		<button
-			onclick={() => {
-				switchTheme();
-			}}
-			aria-label="Toggle theme"
-			class="flex size-8 min-w-[1.5em] flex-none items-center justify-center rounded-lg p-2 text-gray-500 hover:bg-gray-100 dark:text-gray-400 dark:hover:bg-gray-700 max-sm:size-10"
-		>
-			{#if browser}
-				{#if isDark}
-					<IconSun />
-				{:else}
-					<IconMoon />
-				{/if}
-			{/if}
-		</button>
 	</span>
 </div>
 

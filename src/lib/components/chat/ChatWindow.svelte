@@ -626,18 +626,20 @@
 			dark:from-gray-900 dark:via-gray-900/100
 			dark:to-gray-900/0 max-sm:py-0 sm:px-5 md:pb-4 xl:max-w-4xl [&>*]:pointer-events-auto"
 	>
-		{#if !draft.length && !messages.length && !sources.length && !loading && activeExamples.length && !lastIsError}
-			<div
-				class="no-scrollbar mb-3 flex w-full select-none justify-start gap-2 overflow-x-auto whitespace-nowrap text-gray-400 dark:text-gray-500"
-			>
-				{#each activeExamples as ex}
-					<button
-						class="flex items-center rounded-lg bg-gray-100/90 px-2 py-0.5 text-center text-sm backdrop-blur hover:text-gray-500 dark:bg-gray-700/50 dark:hover:text-gray-400"
-						onclick={() => startExample(ex)}>{ex.title}</button
-					>
-				{/each}
-			</div>
-		{/if}
+        {#if !draft.length && !messages.length && !sources.length && !loading && activeExamples.length && !lastIsError}
+            <div
+                class="mb-3 flex w-full flex-wrap justify-start gap-2 text-gray-400 dark:text-gray-100"
+            >
+                {#each activeExamples as ex}
+                    <button
+                        class="whitespace-nowrap rounded-lg bg-gray-100/90 px-2 py-1 text-center text-sm leading-tight backdrop-blur hover:text-gray-500 dark:bg-gray-700/50 dark:hover:text-gray-400"
+                        onclick={() => startExample(ex)}
+                    >
+                        {ex.title}
+                    </button>
+                {/each}
+            </div>
+        {/if}
 		{#if shouldShowRouterFollowUps && !lastIsError}
 			<div
 				class="no-scrollbar mb-3 flex w-full select-none justify-start gap-2 overflow-x-auto whitespace-nowrap text-gray-400 dark:text-gray-500"
@@ -781,7 +783,7 @@
 					"max-sm:hidden": focused && isVirtualKeyboard(),
 				}}
 			>
-				{#if models.find((m) => m.id === currentModel.id)}
+				{#if models.find((m) => m.id === currentModel.id) }
 					{#if loading && streamingToolCallName}
 						<span class="inline-flex items-center gap-1 whitespace-nowrap text-xs">
 							<LucideHammer class="size-3" />
@@ -801,38 +803,15 @@
 							}}
 							class="inline-flex items-center gap-1 hover:underline"
 						>
-							{#if currentModel.isRouter}
+							{#if currentModel.isRouter }
 								<IconOmni />
 								{currentModel.displayName}
 							{:else}
-								Model: {currentModel.displayName}
-								{#if hasProviderOverride}
-									{@const hubOrg =
-										PROVIDERS_HUB_ORGS[providerOverride as keyof typeof PROVIDERS_HUB_ORGS]}
-									<span
-										class="inline-flex shrink-0 items-center rounded p-0.5 {providerOverride ===
-										'fastest'
-											? 'bg-green-100 text-green-600 dark:bg-green-800/20 dark:text-green-500'
-											: providerOverride === 'cheapest'
-												? 'bg-blue-100 text-blue-600 dark:bg-blue-800/20 dark:text-blue-500'
-												: ''}"
-										title="Provider: {providerOverride}"
-									>
-										{#if providerOverride === "fastest"}
-											<IconFast classNames="text-sm" />
-										{:else if providerOverride === "cheapest"}
-											<IconCheap classNames="text-sm" />
-										{:else if hubOrg}
-											<img
-												src="https://huggingface.co/api/avatars/{hubOrg}"
-												alt={providerOverride}
-												class="size-3 flex-none rounded-sm"
-											/>
-										{/if}
-									</span>
-								{/if}
+								AI can make mistakes. Check important info.
+								
+							
 							{/if}
-							<CarbonCaretDown class="-ml-0.5 text-xxs" />
+							
 						</a>
 					{:else if showRouterDetails && streamingRouterMetadata?.route}
 						<div

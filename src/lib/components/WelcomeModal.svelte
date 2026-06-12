@@ -24,13 +24,13 @@
 				src="{publicConfig.assetPath}/omni-welcome.gif"
 				alt="Omni AI model router animation"
 			/>
-			<!-- <h2
+			<h2
 				class="flex translate-y-1 items-center text-3xl font-semibold text-gray-900 dark:text-gray-100"
 			>
 				<Logo classNames="mr-2 size-12 dark:invert" />
 				{publicConfig.PUBLIC_APP_NAME}
-			</h2> -->
-			<div
+			</h2>
+            <div
 				class="absolute bottom-3 right-3 rounded-lg border border-blue-500/20 bg-blue-500/20 px-2 py-0.5 text-sm font-semibold text-blue-500"
 			>
 				Now with MCP!
