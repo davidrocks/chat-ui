@@ -199,15 +199,15 @@
 </script>
 
 <svelte:head>
-	<title>{publicConfig.PUBLIC_APP_NAME} - Chat with AI models</title>
+	<title>{publicConfig.PUBLIC_APP_NAME} - Chat with your personal fragrance expert models</title>
 	<meta name="description" content={publicConfig.PUBLIC_APP_DESCRIPTION} />
-	<meta name="twitter:site" content="@huggingface" />
+	<meta name="twitter:site" content="@prettysmellslab" />
 
 	<!-- use those meta tags everywhere except on special listing pages -->
 	<!-- feel free to refacto if there's a better way -->
 	{#if !page.url.pathname.includes("/models/")}
 		<meta name="twitter:card" content="summary_large_image" />
-		<meta name="twitter:title" content="{publicConfig.PUBLIC_APP_NAME} - Chat with AI models" />
+		<meta name="twitter:title" content="{publicConfig.PUBLIC_APP_NAME} - Chat with your personal fragrance expert models" />
 		<meta name="twitter:description" content={publicConfig.PUBLIC_APP_DESCRIPTION} />
 		<meta
 			name="twitter:image"
@@ -215,7 +215,7 @@
 				page.url.origin}{publicConfig.assetPath}/thumbnail.png"
 		/>
 		<meta name="twitter:image:alt" content="{publicConfig.PUBLIC_APP_NAME} preview" />
-		<meta property="og:title" content="{publicConfig.PUBLIC_APP_NAME} - Chat with AI models" />
+		<meta property="og:title" content="{publicConfig.PUBLIC_APP_NAME} - Chat with your personal fragrance expert models" />
 		<meta property="og:type" content="website" />
 		<meta property="og:url" content="{publicConfig.PUBLIC_ORIGIN || page.url.origin}{base}" />
 		<meta property="og:image" content="{publicConfig.assetPath}/thumbnail.png" />
