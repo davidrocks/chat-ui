@@ -31,11 +31,10 @@
     <div class="max-w-2xl space-y-2 text-left">
         <div>
             <p class="text text-gray-900 dark:text-gray-300 py-1">
-               Upload an image of your scents, or tell us what you like and our AI will match you with new scents.
-            </p>            
+                Upload a photo of a fragrance collection, or tell us what you love. Our AI will recommend fragrances that suit your taste.</p>            
 
             <p class="text text-gray-600 dark:text-gray-300 py-2">
-                All recommended fragrances are in stock and available for immediate delivery from from <a href="https://www.prettysmellslab.com" style="text-decoration: underline;" >our store</a>.
+                Every recommendation is in stock and ready to order from <a href="https://www.prettysmellslab.com" style="text-decoration: underline;" >our store</a>.
             </p>
         </div>
 
