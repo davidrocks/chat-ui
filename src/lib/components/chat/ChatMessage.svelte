@@ -14,7 +14,7 @@
 	import CarbonCheckmark from "~icons/carbon/checkmark";
 	import UploadedFile from "./UploadedFile.svelte";
 
-	import MarkdownRenderer from "./MarkdownRenderer.svelte";
+	import RecommendationAwareMarkdown from "./RecommendationAwareMarkdown.svelte";
 	import OpenReasoningResults from "./OpenReasoningResults.svelte";
 	import Alternatives from "./Alternatives.svelte";
 	import MessageAvatar from "./MessageAvatar.svelte";
@@ -34,6 +34,7 @@
 		alternatives?: Message["id"][];
 		editMsdgId?: Message["id"] | null;
 		isLast?: boolean;
+		conversationId?: string;
 		onretry?: (payload: { id: Message["id"]; content?: string }) => void;
 		onshowAlternateMsg?: (payload: { id: Message["id"] }) => void;
 	}
@@ -47,6 +48,7 @@
 		alternatives = [],
 		editMsdgId = $bindable(null),
 		isLast = false,
+		conversationId,
 		onretry,
 		onshowAlternateMsg,
 	}: Props = $props();
@@ -61,6 +63,7 @@
 
 	function handleContentClick(e: MouseEvent) {
 		const target = e.target as HTMLElement;
+		if (target.closest("[data-product-recommendation-image]")) return;
 		if (target.tagName === "IMG" && target instanceof HTMLImageElement) {
 			e.preventDefault();
 			e.stopPropagation();
@@ -303,7 +306,12 @@
 									<div
 										class="prose max-w-none dark:prose-invert prose-headings:font-semibold prose-h1:text-lg prose-h2:text-base prose-h3:text-base prose-pre:bg-gray-800 prose-img:my-0 prose-img:cursor-pointer prose-img:rounded-lg dark:prose-pre:bg-gray-900"
 									>
-										<MarkdownRenderer content={part} loading={isLast && loading} />
+										<RecommendationAwareMarkdown
+											content={part}
+											loading={isLast && loading}
+											{conversationId}
+											messageId={message.id}
+										/>
 									</div>
 								{/if}
 							{/each}
@@ -311,7 +319,12 @@
 							<div
 								class="prose max-w-none dark:prose-invert prose-headings:font-semibold prose-h1:text-lg prose-h2:text-base prose-h3:text-base prose-pre:bg-gray-800 prose-img:my-0 prose-img:cursor-pointer prose-img:rounded-lg dark:prose-pre:bg-gray-900"
 							>
-								<MarkdownRenderer content={block.content} loading={isLast && loading} />
+								<RecommendationAwareMarkdown
+									content={block.content}
+									loading={isLast && loading}
+									{conversationId}
+									messageId={message.id}
+								/>
 							</div>
 						{/if}
 					{/if}
@@ -331,20 +344,20 @@
 						class="mr-2 flex items-center gap-1.5 truncate whitespace-nowrap text-[.65rem] text-gray-400 dark:text-gray-400 sm:text-xs"
 					>
 						{#if message.routerMetadata.route && message.routerMetadata.model}
-							<span class="truncate rounded bg-gray-100 px-1 font-mono dark:bg-gray-800 sm:py-px">
+							<span class="font-mono truncate rounded bg-gray-100 px-1 dark:bg-gray-800 sm:py-px">
 								{message.routerMetadata.route}
 							</span>
 							<span class="text-gray-500">with</span>
 							{#if publicConfig.isHuggingChat}
 								<a
 									href="/chat/settings/{message.routerMetadata.model}"
-									class="flex items-center gap-1 truncate rounded bg-gray-100 px-1 font-mono hover:text-gray-500 dark:bg-gray-800 dark:hover:text-gray-300 sm:py-px"
+									class="font-mono flex items-center gap-1 truncate rounded bg-gray-100 px-1 hover:text-gray-500 dark:bg-gray-800 dark:hover:text-gray-300 sm:py-px"
 								>
 									{message.routerMetadata.model.split("/").pop()}
 								</a>
 							{:else}
 								<span
-									class="truncate rounded bg-gray-100 px-1.5 font-mono dark:bg-gray-800 sm:py-px"
+									class="font-mono truncate rounded bg-gray-100 px-1.5 dark:bg-gray-800 sm:py-px"
 								>
 									{message.routerMetadata.model.split("/").pop()}
 								</span>
@@ -356,7 +369,7 @@
 							<a
 								target="_blank"
 								href="https://huggingface.co/{hubOrg}"
-								class="flex items-center gap-1 truncate rounded bg-gray-100 px-1 font-mono hover:text-gray-500 dark:bg-gray-800 dark:hover:text-gray-300 max-sm:hidden sm:py-px"
+								class="font-mono flex items-center gap-1 truncate rounded bg-gray-100 px-1 hover:text-gray-500 dark:bg-gray-800 dark:hover:text-gray-300 max-sm:hidden sm:py-px"
 							>
 								<img
 									src="https://huggingface.co/api/avatars/{hubOrg}"
