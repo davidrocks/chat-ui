@@ -50,16 +50,6 @@
 				possible.
 			</p>
 
-			{#if hasPreviousConversations}
-				<button
-					type="button"
-					class="text-sm text-gray-900 underline underline-offset-2 hover:text-gray-900 dark:text-gray-300 dark:hover:text-gray-300"
-					onclick={showPreviousConversations}
-				>
-					Show previous conversations
-				</button>
-			{/if}
-
 			<p class="text-sm text-gray-900 dark:text-gray-300">
 				Browse the full range in our
 				<a
@@ -67,6 +57,16 @@
 					href="https://www.prettysmellslab.com">store</a
 				>.
 			</p>
+
+			{#if hasPreviousConversations}
+				<button
+					type="button"
+					class="text-base text-gray-900 underline underline-offset-2 hover:text-gray-900 dark:text-gray-300 dark:hover:text-gray-300"
+					onclick={showPreviousConversations}
+				>
+					Show previous conversations
+				</button>
+			{/if}
 		</div>
 	</div>
 </div>
