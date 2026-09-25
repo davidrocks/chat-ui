@@ -565,7 +565,7 @@
 		bind:this={chatContainer}
 	>
 		<div
-			class="mx-auto flex h-full max-w-3xl flex-col gap-6 px-3 pt-6 sm:gap-8 xl:max-w-4xl xl:pt-10"
+			 class="mx-auto flex h-full max-w-3xl flex-col gap-6 px-3 pt-6 sm:gap-8 xl:max-w-4xl xl:pt-10"
 		>
 			{#if preprompt && preprompt != currentModel.preprompt}
 				<SystemPromptModal preprompt={preprompt ?? ""} />
@@ -577,7 +577,6 @@
 						<ChatMessage
 							{loading}
 							{message}
-							conversationId={page.params.id}
 							alternatives={messagesAlternatives.find((a) => a.includes(message.id)) ?? []}
 							isAuthor={!shared}
 							readOnly={isReadOnly}
@@ -596,7 +595,6 @@
 			{:else if pending}
 				<ChatMessage
 					loading={true}
-					conversationId={page.params.id}
 					message={{
 						id: "0-0-0-0-0",
 						content: "",
@@ -628,18 +626,20 @@
 			dark:from-gray-900 dark:via-gray-900/100
 			dark:to-gray-900/0 max-sm:py-0 sm:px-5 md:pb-4 xl:max-w-4xl [&>*]:pointer-events-auto"
 	>
-		{#if !draft.length && !messages.length && !sources.length && !loading && activeExamples.length && !lastIsError}
-			<div class="mb-3 flex w-full flex-wrap justify-start gap-2 text-gray-400 dark:text-gray-100">
-				{#each activeExamples as ex}
-					<button
-						class="whitespace-nowrap rounded-lg bg-gray-100/90 px-2 py-1 text-center text-sm leading-tight backdrop-blur hover:text-gray-500 dark:bg-gray-700/50 dark:hover:text-gray-400"
-						onclick={() => startExample(ex)}
-					>
-						{ex.title}
-					</button>
-				{/each}
-			</div>
-		{/if}
+        {#if !draft.length && !messages.length && !sources.length && !loading && activeExamples.length && !lastIsError}
+            <div
+                class="mb-3 flex w-full flex-wrap justify-start gap-2 text-gray-400 dark:text-gray-100"
+            >
+                {#each activeExamples as ex}
+                    <button
+                        class="whitespace-nowrap rounded-lg bg-gray-100/90 px-2 py-1 text-center text-sm leading-tight backdrop-blur hover:text-gray-500 dark:bg-gray-700/50 dark:hover:text-gray-400"
+                        onclick={() => startExample(ex)}
+                    >
+                        {ex.title}
+                    </button>
+                {/each}
+            </div>
+        {/if}
 		{#if shouldShowRouterFollowUps && !lastIsError}
 			<div
 				class="no-scrollbar mb-3 flex w-full select-none justify-start gap-2 overflow-x-auto whitespace-nowrap text-gray-400 dark:text-gray-500"
@@ -724,9 +724,7 @@
 							<ChatInput value="Sorry, something went wrong. Please try again." disabled={true} />
 						{:else}
 							<ChatInput
-								placeholder={isReadOnly
-									? "This conversation is read-only."
-									: "Tell us what you like"}
+								placeholder={isReadOnly ? "This conversation is read-only." : "Tell us what you like"}
 								{loading}
 								bind:value={draft}
 								bind:files
@@ -785,7 +783,7 @@
 					"max-sm:hidden": focused && isVirtualKeyboard(),
 				}}
 			>
-				{#if models.find((m) => m.id === currentModel.id)}
+				{#if models.find((m) => m.id === currentModel.id) }
 					{#if loading && streamingToolCallName}
 						<span class="inline-flex items-center gap-1 whitespace-nowrap text-xs">
 							<LucideHammer class="size-3" />
@@ -805,12 +803,15 @@
 							}}
 							class="inline-flex items-center gap-1 hover:underline"
 						>
-							{#if currentModel.isRouter}
+							{#if currentModel.isRouter }
 								<IconOmni />
 								{currentModel.displayName}
 							{:else}
 								AI can make mistakes. Check important info.
+								
+							
 							{/if}
+							
 						</a>
 					{:else if showRouterDetails && streamingRouterMetadata?.route}
 						<div
